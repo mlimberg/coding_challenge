@@ -3,7 +3,6 @@ const rankHand = require('../app.js');
 
 describe('Application', () => {
 
-
   it('should check for high card', () => {
     assert.equal(rankHand(['6s', '10c', '9d', '2d', '8c']), 'High Card - 10')
     assert.equal(rankHand(['2h', 'Ac', '10d', 'Qh', '4d']), 'High Card - Ace')
