@@ -10,15 +10,6 @@
 */
 
 
-
-// const checkSuits = (obj) => {
-//   let flush = false
-//   Object.keys(obj).forEach(suit => {
-//     if(obj[suit] === 5) { flush = true }
-//   })
-//   return flush
-// }
-
 const getPairValue = (obj) => {
   let pair;
   const cardValues = { J: 'Jack', Q: 'Queen', K: 'King', A: 'Ace'}
@@ -30,7 +21,7 @@ const getPairValue = (obj) => {
       pair = val
     }
   })
-  return pair
+  return `Pair of ${pair}s`
 }
 
 const checkThree = (obj) => {
@@ -51,39 +42,86 @@ const checkTwo = (obj) => {
   return hand
 }
 
+const getHighCard = (obj) => {
+  const numberVals = { J: 11, Q: 12, K: 13, A: 14  };
+  return Object.keys(obj).reduce((high, num) => {
+    if(numberVals[num]) {
+      num = numberVals[num]
+    }
+
+    num = parseInt(num)
+
+    if(num > high) {
+      high = parseInt(num)
+    }
+    return high
+  }, 0)
+}
+
 const checkStraight = (obj) => {
-  let count = 0;
   const keys = Object.keys(obj)
+  let straight = false;
 
-  if(!obj['5'] && !obj['10'] || obj['5'] && obj['10']) { return false }
+  if(!obj['5'] && !obj['10'] || obj['5'] && obj['10']) {
+    return false
+  }
+
   const aceValue = keys.includes('5') ? 1 : 14
-
   const numberVals = { J: 11, Q: 12, K: 13, A: aceValue  }
 
   const sortedVals = keys.map(val => {
     return numberVals[val] ? numberVals[val] : parseInt(val)
   }).sort((a, b) => b - a)
 
-  sortedVals.forEach((num, i, arr) => {
+  const count = sortedVals.reduce((sum, num, i, arr) => {
     if(i !== arr.length - 1) {
-      count += num - arr[i + 1]
+      sum += num - arr[i + 1]
     }
-  })
-  return count === 4 ? true : false
+    return sum
+  }, 0)
+
+  straight = count === 4 ? true : false
+
+  return {
+    straight,
+    lowStraight: aceValue === 1 && straight ? true : false
+  }
 }
 
+const checkFive = (obj) => {
+  const cardValues = { '11': 'Jack', '12': 'Queen', '13': 'King', '14': 'Ace'};
+  const straightDetails = checkStraight(obj.vals);
+  const straight = straightDetails.straight
+  const val = getHighCard(obj.vals).toString()
+  const highCard = straightDetails.lowStraight ? 5 : cardValues[val] ? cardValues[val] : val
+  let flush = false;
+  let hand;
 
+  if(Object.keys(obj.suits).length === 1) {
+    flush = true
+  }
+
+  switch(true) {
+    case !straight && !flush:
+      return `High Card - ${highCard}`;
+      break;
+    case straight && !flush:
+      return `${highCard} High Straight`;
+      break;
+    case !straight && flush:
+      return `${highCard} High Flush`;
+      break;
+    case straight && flush && highCard !== 'Ace':
+      return 'Straight Flush';
+      break;
+    case straight && flush && highCard === 'Ace':
+      return 'Royal Flush';
+    default:
+      return;
+  }
+}
 
 const rankHand = (hand) => {
-  const cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-  const suits = ['d', 'h', 's', 'c']
-  const results = {
-    pairs: 0,
-    triples: 0,
-    quadCount: 0,
-    flush: false,
-    straight: false
-  }
 
   const handSummary = hand.reduce((obj, card) => {
     let hand;
@@ -97,30 +135,16 @@ const rankHand = (hand) => {
     return obj
   }, { vals: {}, suits: {} })
 
-  // if(Object.keys(handSummary.vals).length === 5) {
-  //   results.straight = checkStraight(handSummary.vals)
-  // }
-
-  if(Object.keys(handSummary.suits).length === 1) {
-    results.flush = true
-  }
-
   switch(Object.keys(handSummary.vals).length) {
     case 5:
-      hand = '5'
+      return checkFive(handSummary)
     case 4:
-      const pair = getPairValue(handSummary.vals)
-      return hand = `Pair of ${pair}s`
+      return getPairValue(handSummary.vals)
     case 3:
-      return hand = checkThree(handSummary.vals)
+      return checkThree(handSummary.vals)
     case 2:
-      return hand = checkTwo(handSummary.vals)
-
+      return checkTwo(handSummary.vals)
   }
-
-
-
-  return hand
 }
 
 // export your function for testing
