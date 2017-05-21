@@ -28,7 +28,9 @@ const rankHand = (hand) => {
     return obj
   }, { vals: {}, suits: {} })
 
-  switch(Object.keys(handSummary.vals).length) {
+  const numberOfValues = Object.keys(handSummary.vals).length
+
+  switch(numberOfValues) {
     case 5:
       return checkFive(handSummary);
       break;
@@ -44,4 +46,4 @@ const rankHand = (hand) => {
   }
 }
 
-module.exports = rankHand
+module.exports = rankHand;
