@@ -3,11 +3,23 @@ const rankHand = require('../app.js');
 
 describe('Application', () => {
 
+  it('should check for an invalid hand', () => {
+    const error = 'Invalid hand! Please submit an array with a valid poker hand';
+
+    assert.equal(rankHand(['Ad', 'As', 'Ah', 'Ac', 'As']), error)
+  })
+
+  it('should handle case variations', () => {
+    assert.equal(rankHand(['KH', 'KD', '7D', '5C', '2H']), 'Pair of Kings')
+    assert.equal(rankHand(['kH', 'kC', 'kD', '5C', '2h']), 'Three of a Kind')
+    assert.equal(rankHand(['Ac', 'kc', 'qc', 'Jc', '10C']), 'Royal Flush')
+  })
+
   it('should check for high card', () => {
-    assert.equal(rankHand(['6s', '10c', '9d', '2d', '8c']), 'High Card - 10')
-    assert.equal(rankHand(['2h', 'Ac', '10d', 'Qh', '4d']), 'High Card - Ace')
-    assert.equal(rankHand(['7h', '2c', '3d', '4h', '5d']), 'High Card - 7')
-    assert.equal(rankHand(['2h', '3c', 'Jd', '4h', '8d']), 'High Card - Jack')
+    assert.equal(rankHand(['6s', '10c', '9d', '2d', '8c']), '10 High')
+    assert.equal(rankHand(['2h', 'Ac', '10d', 'Qh', '4d']), 'Ace High')
+    assert.equal(rankHand(['7h', '2c', '3d', '4h', '5d']), '7 High')
+    assert.equal(rankHand(['2h', '3c', 'Jd', '4h', '8d']), 'Jack High')
   })
 
   it('should check for a pair', () => {
@@ -74,3 +86,42 @@ describe('Application', () => {
   })
 
 });
+
+
+describe('Multiple Inputs', () => {
+  const error = 'Invalid hand! Please submit an array with a valid poker hand'
+
+  it('should convert 5 separate arguments into an array', () => {
+    assert.equal(rankHand('6h', '10h', '9h', '7h', '8h'), 'Straight Flush')
+    assert.equal(rankHand('As', 'Ks', 'Qs', 'Js', '10s'), 'Royal Flush')
+    assert.equal(rankHand('7h', '7c', '5d', '5c', '5h'), 'Full House')
+    assert.equal(rankHand('2h', '3c', 'Jd', '4h', '8d'), 'Jack High')
+  })
+
+  it('should send an error if there are more or less than 5 cards', () => {
+    assert.equal(rankHand(['4s', 'Kh', '10c']), error)
+    assert.equal(rankHand('4s', 'Kh', '10c'), error)
+    assert.equal(rankHand('4s', 'Kh', '10c', 'As', 'Jh', '2c'), error)
+    assert.equal(rankHand(['4s', 'Kh', '10c', 'As', 'Jh', '2c']), error)
+    assert.equal(rankHand(), error)
+  })
+
+  it('should handle an empty object or array', () => {
+    assert.equal(rankHand({}), error)
+    assert.equal(rankHand([]), error)
+  })
+
+  it('should handle duplicate card values', () => {
+    assert.equal(rankHand(['4s', 'Kh', '10c', 'Kh', '5c']), error)
+    assert.equal(rankHand(['4s', 'Ad', '10c', 'Ad', '5c']), error)
+    assert.equal(rankHand(['4s', 'Ad', '10c', '4s', '5c']), error)
+  })
+
+  it('should handle non-card strings', () => {
+    assert.equal(rankHand('cards!'), error)
+    assert.equal(rankHand('as', 'asldkfaaaaj', 'askdfj', 'asldkfj', 'aslkfj'), error)
+    assert.equal(rankHand('Ax', 'Ke', '4p', 'Js', '7h'), error)
+  })
+
+
+})

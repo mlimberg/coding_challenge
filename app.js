@@ -13,14 +13,19 @@ const checkTwo = require('./checks/checkTwo.js')
 const checkThree = require('./checks/checkThree.js')
 const checkFour = require('./checks/checkFour.js')
 const checkFive = require('./checks/checkFive.js')
+const checkInput = require('./checks/checkInput.js')
 
-const rankHand = (hand) => {
+const rankHand = (...hand) => {
+
+  hand = checkInput(hand);
+
+  if(!Array.isArray(hand)) { return hand }
 
   const handSummary = hand.reduce((obj, card) => {
     let hand;
-    const lastChar = card.length - 1
-    const suit = card.slice(lastChar)
-    const value = card.slice(0, lastChar)
+    const lastChar = card.length - 1;
+    const suit = card.slice(lastChar).toLowerCase();
+    const value = card.slice(0, lastChar).toUpperCase();
 
      !obj.suits[suit] ?  obj.suits[suit] = 1 :  obj.suits[suit]++
      !obj.vals[value] ?  obj.vals[value] = 1 :  obj.vals[value]++
@@ -43,6 +48,8 @@ const rankHand = (hand) => {
     case 2:
       return checkTwo(handSummary.vals)
       break;
+    default:
+      return 'Invalid hand! Please submit an array with a valid poker hand'
   }
 }
 

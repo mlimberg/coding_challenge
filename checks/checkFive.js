@@ -15,7 +15,7 @@ const checkFive = (obj) => {
 
   switch(true) {
     case !straight && !flush:
-      return `High Card - ${highCard}`;
+      return `${highCard} High`;
       break;
     case straight && !flush:
       return `${highCard} High Straight`;
