@@ -1,6 +1,11 @@
-const checkFour = (obj) => {
+const checkFour = obj => {
   let pair;
-  const cardValues = { J: 'Jack', Q: 'Queen', K: 'King', A: 'Ace'};
+  const cardValues = {
+    J: 'Jack',
+    Q: 'Queen',
+    K: 'King',
+    A: 'Ace'
+  };
 
   Object.keys(obj).forEach(val => {
     if(obj[val] > 1) {

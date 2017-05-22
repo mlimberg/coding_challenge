@@ -1,8 +1,8 @@
-const checkInput = (input) => {
-  const cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-  const suits = ['c', 'd', 'h', 's']
+const checkInput = input => {
+  const cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+  const suits = ['c', 'd', 'h', 's'];
 
-  const error = 'Invalid hand! Please submit an array with a valid poker hand'
+  const error = 'Invalid hand! Please submit an array with a valid poker hand';
   let hand;
 
   switch(true) {
@@ -18,17 +18,17 @@ const checkInput = (input) => {
   }
 
   const handCheck = hand.reduce((obj, card) => {
-    const lastChar = card.length - 1
-    const suit = card.slice(lastChar).toLowerCase()
-    const value = card.slice(0, lastChar).toUpperCase()
+    const lastChar = card.length - 1;
+    const suit = card.slice(lastChar).toLowerCase();
+    const value = card.slice(0, lastChar).toUpperCase();
 
     if(cards.includes(value) && suits.includes(suit)) {
-      !obj[card] ? obj[card] = 1 : obj[card]++
+      !obj[card] ? obj[card] = 1 : obj[card]++;
     }
-    return obj
+    return obj;
   }, {})
 
-  return Object.keys(handCheck).length === 5 ? hand : error
+  return Object.keys(handCheck).length === 5 ? hand : error;
 }
 
 module.exports = checkInput;
