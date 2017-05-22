@@ -1,5 +1,10 @@
-const getHighCard = (obj) => {
-  const numberVals = { J: 11, Q: 12, K: 13, A: 14 };
+const getHighCard = obj => {
+  const numberVals = {
+    J: 11,
+    Q: 12,
+    K: 13,
+    A: 14
+  };
 
   return Object.keys(obj).reduce((high, num) => {
     if(numberVals[num]) {
